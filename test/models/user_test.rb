@@ -26,7 +26,7 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
-  test 'メールアドレスが文字以下であること' do
+  test 'メールアドレスが256文字以下であること' do
     @user.name = 'a' * 244 + '@example.com'
     assert_not @user.valid?
   end
@@ -44,5 +44,15 @@ class UserTest < ActiveSupport::TestCase
     duplicate_user.email = @user.email.downcase
     @user.save
     assert_not duplicate_user.valid?
+  end
+
+  test 'パスワードが存在すること' do
+    @user.password = @user.password_confirmation = ' ' * 6
+    assert_not @user.valid?
+  end
+
+  test 'パスワードが6文字以上であること' do
+    @user.password = @user.password_confirmation = 'a' * 5
+    assert_not @user.valid?
   end
 end
